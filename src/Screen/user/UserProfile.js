@@ -19,7 +19,7 @@ import UserForm from './UserForm';
 import ProfileForm from './ProfileForm';
 
 const screenWidth = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+// const height = Dimensions.get('window').height;
 
 const UserProfile = ({user}) => {
   const animation = useRef(new Animated.Value(0)).current;
