@@ -8,7 +8,7 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import React, {useRef} from 'react';
+import React, {useRef, useContext} from 'react';
 import {Button} from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ShopOther from '../shopping/ShopOther';
@@ -17,17 +17,39 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import UserForm from './UserForm';
 import ProfileForm from './ProfileForm';
+import {useQuery, gql} from '@apollo/client';
+import {AuthContext} from '../../useAuth';
+import ButtonForm from '../../Component/ButtonForm';
 
+// import {KNOW} from './graphql/queries';
 const screenWidth = Dimensions.get('window').width;
 // const height = Dimensions.get('window').height;
+export const TRACKS = gql`
+  query TracksForHome {
+    tracksForHome {
+      id
+      title
+      author {
+        name
+        photo
+      }
+    }
+  }
+`;
 
 const UserProfile = ({user}) => {
   const animation = useRef(new Animated.Value(0)).current;
   const scrollView = useRef();
+  const {loading, error, data} = useQuery(TRACKS);
+  const {signOut} = useContext(AuthContext);
+  // if (loading) return <View> 'Loading'</View>;
+  // if (error) return <View>`Aldaa! ${error.message}`</View>;
+
+  console.log('data===>', data);
   return (
     <View>
       <User user={user} />
-      <EditUser user={user} />
+      <EditUser user={user} data={data} signOut={signOut} />
       <ShopOther
         LeftText="Discover people"
         RightText="See All"
@@ -126,14 +148,48 @@ const User = ({user}) => (
     </View>
   </View>
 );
-const EditUser = ({user}) => (
+
+const EditUser = ({user, data, signOut}) => (
   <View>
     <Text style={{marginLeft: 12, marginVertical: 12}}>Davaa</Text>
+    <Button
+      onPress={() => {
+        signOut();
+      }}
+      color="black">
+      Sign Out
+    </Button>
+    <ScrollView horizontal>
+      {data?.tracksForHome.map((item, index) => (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            width: 100,
+            height: 80,
+            borderWidth: 0.2,
+            marginHorizontal: 5,
+            marginVertical: 5,
+          }}>
+          <View
+            style={
+              {
+                // flex: 1,
+                // flexDirection: 'r',
+              }
+            }>
+            <Text>{item.id}</Text>
+          </View>
+          <View style={{}}>
+            <Text>{item.author.name}</Text>
+          </View>
+        </View>
+      ))}
+    </ScrollView>
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        // marginHorizontal: 12,
       }}>
       <Button
         mode="outlined"
