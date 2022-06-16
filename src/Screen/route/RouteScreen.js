@@ -16,15 +16,32 @@ import {AuthContext} from '../../useAuth';
 import {login} from '../LoginScreen/graphql/mutations';
 import {useMutation} from '@apollo/client';
 import {StyleSheet, Text, View, Alert} from 'react-native';
+import FollowScreen from '../following/FollowScreen';
+import Favorites, {FavoritesScreen} from '../favorites';
+
 const Stack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
+const AuthStackScreens = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignupScreen} />
+    </Stack.Navigator>
+  );
+};
 const MyTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={{headerShown: false}}
       tabBarOptions={{showLabel: false}}>
+      {/* tabBar=
+      {props => (
+        <View>
+          <CustomTabBar {...props} />
+        </View>
+      )} */}
       <Tab.Screen
         name="Home"
         component={HomeScreen}
@@ -89,6 +106,7 @@ const MyTabs = () => {
     </Tab.Navigator>
   );
 };
+
 export function RouteScreen({navigation, props}) {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
@@ -164,22 +182,22 @@ export function RouteScreen({navigation, props}) {
     }),
     [],
   );
+
+  if (state.isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <AuthContext.Provider value={authContext}>
-      <Stack.Navigator
-        screenOptions={{headerShown: false}}
-        // initialRouteName="Signup"
-      >
-        {state.isLoading ? (
-          // We haven't finished checking for the token yet
-          <Stack.Screen name="Splash" component={SplashScreen} />
-        ) : state.userToken == null ? (
-          <Stack.Screen name="Login" component={LoginScreen} />
-        ) : (
+      {state.userToken !== null ? (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="MyTabs" component={MyTabs} />
-        )}
-        {/* <Stack.Screen name="Signup" component={SignupScreen} /> */}
-      </Stack.Navigator>
+          <Stack.Screen name="Follow" component={FollowScreen} />
+          <Stack.Screen name="Favorites" component={FavoritesScreen} />
+        </Stack.Navigator>
+      ) : (
+        <AuthStackScreens />
+      )}
     </AuthContext.Provider>
   );
 }
