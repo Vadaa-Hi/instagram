@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import image from '../../../assets/img';
 import logo from '../../../assets/icons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -20,16 +20,42 @@ import Popover, {
 } from 'react-native-popover-view';
 import {useNavigation} from '@react-navigation/native';
 
-const Header = () => {
+const Header = ({from}) => {
   const navigation = useNavigation();
   const seperator = () => {
     return <View style={styles.seperator} />;
   };
+  const [showPopover, setShowPopover] = useState(false);
+  const doAction = action => {
+    setShowPopover(false);
+    setTimeout(() => {
+      action && action();
+    }, 300);
+  };
+
+  const popOverItem = (onPress, icon, text) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+        }}
+        onPress={() => {
+          doAction(onPress);
+        }}>
+        <Text style={styles.popoverText}>{text}</Text>
+        <Feather name={icon} size={16} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={headerContainer}>
       <Popover
         from={
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowPopover(true)}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image style={styles.image} source={image.instagram} />
               <Text> </Text>
@@ -38,22 +64,28 @@ const Header = () => {
           </TouchableOpacity>
         }
         placement={PopoverPlacement.FLOATING}
-        popoverStyle={[styles.popoverShadow, {width: 130, height: 60}]}
+        popoverStyle={[styles.popoverShadow, {width: 140, height: 60}]}
         arrowStyle={{height: 0}}
-        popoverShift={{x: -0.9, y: -0.77}}>
-        <TouchableOpacity onPress={() => navigation.navigate('Follow')}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={styles.popoverText}>Following</Text>
-            <Feather name="user-check" size={16} />
-          </View>
-        </TouchableOpacity>
-        {seperator()}
-        <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={styles.popoverText}>Favorites</Text>
-            <Ionicons name="star-outline" size={16} />
-          </View>
-        </TouchableOpacity>
+        popoverShift={{x: -0.9, y: -0.77}}
+        isVisible={showPopover}
+        onRequestClose={() => setShowPopover(false)}>
+        <View>
+          {popOverItem(
+            () => {
+              navigation.navigate('Follow');
+            },
+            'user-check',
+            'Following',
+          )}
+          {seperator()}
+          {popOverItem(
+            () => {
+              navigation.navigate('Favorites');
+            },
+            'star',
+            'Favorites',
+          )}
+        </View>
       </Popover>
       <View style={{flexDirection: 'row'}}>
         <LogoForm uri={logo.plus} />
@@ -120,15 +152,22 @@ const styles = StyleSheet.create({
   },
   popoverText: {
     margin: 3,
-    marginRight: 20,
+    // marginRight: 20,
     fontSize: 20,
+    // marginHorizontal: 8,
   },
   seperator: {
     height: 1,
     backgroundColor: 'grey',
-    width: '100%',
+    width: 140,
     opacity: 0.3,
     // marginHorizontal: 16,
     zIndex: 10,
   },
+  // popovermenu: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   paddingVertical: 10,
+  //   paddingHorizontal: 15,
+  // },
 });

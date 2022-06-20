@@ -192,8 +192,16 @@ export function RouteScreen({navigation, props}) {
       {state.userToken !== null ? (
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="MyTabs" component={MyTabs} />
-          <Stack.Screen name="Follow" component={FollowScreen} />
-          <Stack.Screen name="Favorites" component={FavoritesScreen} />
+          <Stack.Screen
+            name="Follow"
+            component={FollowScreen}
+            options={{headerShown: true}}
+          />
+          <Stack.Screen
+            name="Favorites"
+            component={FavoritesScreen}
+            options={{headerShown: true}}
+          />
         </Stack.Navigator>
       ) : (
         <AuthStackScreens />

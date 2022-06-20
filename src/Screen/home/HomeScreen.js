@@ -6,7 +6,6 @@ import Header from './Header';
 import Story from './Story';
 import {POSTS} from '../../data/post';
 import Post from './Post';
-import PopOver from './PopOver';
 
 const HomeScreen = () => {
   return (
@@ -17,7 +16,6 @@ const HomeScreen = () => {
         {POSTS.map((post, index) => (
           <Post post={post} key={index} />
         ))}
-        <PopOver />
       </ScrollView>
     </SafeAreaView>
   );
