@@ -1,11 +1,11 @@
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 
-const LogoForm = ({uri}) => {
+const LogoForm = ({uri, onPress, ref}) => {
   return (
     <View style={{marginLeft: 12}}>
-      <TouchableOpacity>
-        <Image source={{uri: uri}} style={styles.image} />
+      <TouchableOpacity onPress={onPress}>
+        <Image ref={ref} source={{uri: uri}} style={styles.image} />
       </TouchableOpacity>
     </View>
   );

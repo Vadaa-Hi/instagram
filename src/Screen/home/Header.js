@@ -19,9 +19,11 @@ import Popover, {
   PopoverMode,
 } from 'react-native-popover-view';
 import {useNavigation} from '@react-navigation/native';
+import XPopover from '../../Component/Modal/XPopover';
 
-const Header = ({from}) => {
+const Header = ({...props}) => {
   const navigation = useNavigation();
+  const PopoverRef = useRef();
   const seperator = () => {
     return <View style={styles.seperator} />;
   };
@@ -44,7 +46,8 @@ const Header = ({from}) => {
         }}
         onPress={() => {
           doAction(onPress);
-        }}>
+        }}
+        ref={PopoverRef}>
         <Text style={styles.popoverText}>{text}</Text>
         <Feather name={icon} size={16} />
       </TouchableOpacity>
@@ -53,22 +56,17 @@ const Header = ({from}) => {
 
   return (
     <View style={headerContainer}>
-      <Popover
-        from={
-          <TouchableOpacity onPress={() => setShowPopover(true)}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image style={styles.image} source={image.instagram} />
-              <Text> </Text>
-              <SimpleLineIcons name="arrow-down" size={16} />
-            </View>
-          </TouchableOpacity>
-        }
-        placement={PopoverPlacement.FLOATING}
-        popoverStyle={[styles.popoverShadow, {width: 140, height: 60}]}
-        arrowStyle={{height: 0}}
-        popoverShift={{x: -0.9, y: -0.77}}
+      <TouchableOpacity onPress={() => setShowPopover(true)} ref={PopoverRef}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image style={styles.image} source={image.instagram} />
+          <Text> </Text>
+          <SimpleLineIcons name="arrow-down" size={16} />
+        </View>
+      </TouchableOpacity>
+      <XPopover
+        from={PopoverRef}
         isVisible={showPopover}
-        onRequestClose={() => setShowPopover(false)}>
+        onVisible={setShowPopover}>
         <View>
           {popOverItem(
             () => {
@@ -86,7 +84,7 @@ const Header = ({from}) => {
             'Favorites',
           )}
         </View>
-      </Popover>
+      </XPopover>
       <View style={{flexDirection: 'row'}}>
         <LogoForm uri={logo.plus} />
         <LogoForm uri={logo.like} />
@@ -95,7 +93,6 @@ const Header = ({from}) => {
     </View>
   );
 };
-
 export default Header;
 
 const styles = StyleSheet.create({
