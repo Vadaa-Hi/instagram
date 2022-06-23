@@ -46,8 +46,7 @@ const Header = ({...props}) => {
         }}
         onPress={() => {
           doAction(onPress);
-        }}
-        ref={PopoverRef}>
+        }}>
         <Text style={styles.popoverText}>{text}</Text>
         <Feather name={icon} size={16} />
       </TouchableOpacity>
@@ -66,7 +65,8 @@ const Header = ({...props}) => {
       <XPopover
         from={PopoverRef}
         isVisible={showPopover}
-        onVisible={setShowPopover}>
+        onVisible={setShowPopover}
+        placement={PopoverPlacement.FLOATING}>
         <View>
           {popOverItem(
             () => {
